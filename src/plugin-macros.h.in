@@ -1,6 +1,6 @@
 /*
-Plugin Name
-Copyright (C) <Year> <Developer> <Email Address>
+OBS Recording Autosort scaffold
+Based on the OBS plugin template; see the repository's attribution notes.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,12 +16,14 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#ifndef PLUGINNAME_H
-#define PLUGINNAME_H
+#ifndef OBS_RECORDINGAUTOSORT_PLUGIN_MACROS_H
+#define OBS_RECORDINGAUTOSORT_PLUGIN_MACROS_H
 
 #define PLUGIN_NAME "@CMAKE_PROJECT_NAME@"
 #define PLUGIN_VERSION "@CMAKE_PROJECT_VERSION@"
+#define PLUGIN_DESCRIPTION "@CMAKE_PROJECT_DESCRIPTION@"
 
-#define blog(level, msg, ...) blog(level, "[" PLUGIN_NAME "] " msg, ##__VA_ARGS__)
+#define blog(level, msg, ...) \
+	blog(level, "[" PLUGIN_NAME "] " msg, ##__VA_ARGS__)
 
-#endif // PLUGINNAME_H
+#endif // OBS_RECORDINGAUTOSORT_PLUGIN_MACROS_H
