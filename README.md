@@ -1,55 +1,88 @@
-# OBS Plugin Template
+# OBS recording autosort scaffold
 
-## Introduction
+A development starting point for an OBS Studio recording-sorting plugin, derived
+from the OBS Project plugin template.
 
-This plugin is meant to make it easy to quickstart development of new OBS plugins. It includes:
+**Status: scaffold only.** The current module logs when OBS loads or unloads it.
+It does not observe recording events, choose destination folders, move or rename
+recordings, or expose sorting settings. The repository name describes the intended
+project; there is no working autosort feature or published release here.
 
-- The CMake project file
-- Boilerplate plugin source code
-- GitHub Actions workflows and repository actions
-- Build scripts for Windows, macOS, and Linux
+## Current contents
 
-## Configuring
+- A minimal C plugin with module identity and a description of its scaffold status.
+- CMake configuration using the machine name `obs-recordingautosort`.
+- Historical OBS 28.0.1 dependency pins and cross-platform packaging helpers.
+- A small automated source/build check, plus the preserved original template
+  documentation and workflow for provenance.
 
-Open `buildspec.json` and change the name and version of the plugin accordingly. This is also where the obs-studio version as well as the pre-built dependencies for Windows and macOS are defined. Use a release version (with associated checksums) from a recent [obs-deps release](https://github.com/obsproject/obs-deps/releases).
+The template version `1.0.0` remains in the build metadata to avoid changing the
+historical dependency/package setup. It is not a claim of a completed 1.0 release.
 
-Next, open `CMakeLists.txt` and edit the following lines at the beginning:
+## Build with an installed OBS development environment
 
-```cmake
-project(obs-plugintemplate VERSION 1.0.0)
+The module requires CMake, C/C++ compilers and an OBS development installation that
+exports the `OBS::libobs` CMake target. This cleanup does not install OBS or change
+its recording configuration.
 
-set(PLUGIN_AUTHOR "Your Name Here")
-
-set(LINUX_MAINTAINER_EMAIL "me@contoso.com")
+```sh
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/obs-development-prefix
+cmake --build build
 ```
 
-The build scripts (contained in the `.github/scripts` directory) will update the `project` line automatically based on values from the `buildspec.json` file. If the scripts are not used, these changes need to be done manually.
+Use the architecture and compiler supported by your OBS development installation.
+Generated plugin headers stay in the build directory. The source tree is not an
+output directory for those headers.
 
-## GitHub Actions & CI
+`buildspec.json` retains the original OBS 28.0.1 and 2022 dependency references.
+Compatibility with current OBS releases, Windows/macOS packaging, signing and
+notarization has not been established. The inherited helper scripts are retained
+for development reference; they are not a supported one-command release process.
 
-The scripts contained in `github/scripts` can be used to build and package the plugin and take care of setting up obs-studio as well as its own dependencies. A default workflow for GitHub Actions is also provided and will use these scripts.
+For packaging, supply your own `PLUGIN_AUTHOR` and `LINUX_MAINTAINER_EMAIL` CMake
+cache values. Both default to empty rather than template names or invented contact
+details. `MACOS_BUNDLEID` is configurable and uses the current repository owner's
+namespace. Review these values when preparing a real distribution.
 
-### Retrieving build artifacts
+## Validation scope
 
-Each build produces installers and packages that you can use for testing and releases. These artifacts can be found on the action result page via the "Actions" tab in your GitHub repository.
+The active GitHub workflow checks the scaffold without downloading or building
+OBS. Its offline CMake/compiler smoke check uses a minimal substitute for the
+libobs development interface. That verifies local build wiring and the module's
+small load/unload behavior; it is **not** an OBS ABI, plugin installation or
+recording-sorting integration test.
 
-#### Building a Release
+Run the same Linux-only check locally with Python 3, CMake and C/C++ compilers installed:
 
-Simply create and push a tag and GitHub Actions will run the pipeline in Release Mode. This mode uses the tag as its version number instead of the git ref in normal mode.
+```sh
+python3 tests/check_scaffold.py
+```
 
-### Signing and Notarizing on macOS
+The check uses a temporary source copy and does not change an OBS installation.
 
-On macOS, Release Mode builds can be signed and sent to Apple for notarization if the necessary codesigning credentials are added as secrets to your repository. **You'll need a paid Apple Developer Account for this.**
+A real libobs development package was unavailable in the cleanup environment.
+The real OBS build and loading the plugin inside OBS therefore remain unverified.
+No recording files were inspected, moved or renamed.
 
-- On your Apple Developer dashboard, go to "Certificates, IDs & Profiles" and create two signing certificates:
-    - One of the "Developer ID Application" type. It will be used to sign the plugin's binaries
-    - One of the "Developer ID Installer" type. It will be used to sign the plugin's installer
-- Using the Keychain app on macOS, export these two certificates and keys into a .p12 file **protected with a strong password**
-- Encode the .p12 file into its base64 representation by running `base64 YOUR_P12_FILE`
-- Add the following secrets in your Github repository settings:
-    - `MACOS_SIGNING_APPLICATION_IDENTITY`: Name of the "Developer ID Application" signing certificate generated earlier
-    - `MACOS_SIGNING_INSTALLER_IDENTITY`: Name of "Developer ID Installer" signing certificate generated earlier
-    - `MACOS_SIGNING_CERT`: Base64-encoded string generated above
-    - `MACOS_SIGNING_CERT_PASSWORD`: Password used to generate the .p12 certificate
-    - `MACOS_NOTARIZATION_USERNAME`: Your Apple Developer account's username
-    - `MACOS_NOTARIZATION_PASSWORD`: Your Apple Developer account's password (use a generated "app password" for this)
+The previous multi-platform workflow is preserved, inactive, at
+[`docs/upstream/main-2022.yml`](docs/upstream/main-2022.yml). Its old build/release
+assumptions require a separate update before use. The active workflow does not
+publish releases, upload installers, or use signing credentials.
+
+## Work still needed for autosort
+
+A functional implementation would need recording lifecycle integration, an
+explicit sorting rule and destination setting, handling for files still being
+written, collision-safe moves and useful failure reporting. Those features are
+not implemented by this cleanup. This scaffold should not be presented as a
+completed plugin or evidence of a tested recording workflow.
+
+## Attribution and license
+
+The initial commit imported the OBS plugin template. The module's starting source
+is upstream template code; its commit attribution does not establish original
+authorship of that template. See [provenance](PROVENANCE.md) and the preserved
+[original template README](docs/upstream-template-README.md).
+
+The existing [GPL version 2 license text](LICENSE) and source notices permitting
+GPL version 2 or later are retained. No new blanket licensing terms are added.

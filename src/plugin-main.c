@@ -1,6 +1,6 @@
 /*
-Plugin Name
-Copyright (C) <Year> <Developer> <Email Address>
+OBS Recording Autosort scaffold
+Based on the OBS plugin template; see the repository's attribution notes.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,19 +18,30 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-module.h>
 
-#include "plugin-macros.generated.h"
+#include <plugin-macros.generated.h>
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
+const char *obs_module_name(void)
+{
+	return PLUGIN_NAME " (scaffold)";
+}
+
+const char *obs_module_description(void)
+{
+	return PLUGIN_DESCRIPTION;
+}
+
 bool obs_module_load(void)
 {
-	blog(LOG_INFO, "plugin loaded successfully (version %s)",
+	blog(LOG_INFO,
+	     "scaffold loaded (version %s); recording sorting is not implemented",
 	     PLUGIN_VERSION);
 	return true;
 }
 
-void obs_module_unload()
+void obs_module_unload(void)
 {
 	blog(LOG_INFO, "plugin unloaded");
 }

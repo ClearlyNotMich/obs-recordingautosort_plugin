@@ -1,0 +1,31 @@
+name: Offline scaffold checks
+
+# This verifies metadata, CMake wiring and load/unload callbacks against a fake
+# libobs fixture. It does not build OBS, test its ABI or create plugin packages.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scaffold-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scaffold:
+    name: Linux scaffold smoke check (fake libobs)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check metadata, CMake and scaffold callbacks offline
+        run: python3 tests/check_scaffold.py
